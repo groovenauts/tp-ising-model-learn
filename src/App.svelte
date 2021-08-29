@@ -454,6 +454,7 @@
 	.inspector {
 		border: 1px solid black;
 		padding: 0;
+		overflow: scroll;
 	}
 
 	table {
