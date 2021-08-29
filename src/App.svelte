@@ -59,23 +59,26 @@
 	class Graph {
 		vertices: Vertices = [];
 		edges: Edges = [];
-		lastIndex: number = 0;
 
 		constructor() {}
 
 		addVertex(
 			position: Position,
 			weight: number = 0,
-			value: 0 | 1 = 0
+			value: 0 | 1 = 0,
+			index: number = undefined
 		): Vertex {
 			const vertex: Vertex = {
-				index: this.lastIndex,
+				index: index ?? this.vertices.length,
 				position,
 				weight,
 				value,
 			};
-			this.vertices.push(vertex);
-			this.lastIndex++;
+			if (index) {
+				this.vertices[index] = vertex;
+			} else {
+				this.vertices.push(vertex);
+			}
 			return vertex;
 		}
 
@@ -203,23 +206,78 @@
 			graph = graph;
 		}
 	}
+
+	function download(e) {
+		const a = document.createElement("a");
+		const file = new Blob(
+			[
+				JSON.stringify({
+					vertices: graph.vertices,
+					edges: graph.edges,
+				}),
+			],
+			{ type: "text/plain" }
+		);
+		a.href = URL.createObjectURL(file);
+		a.download = "graph.json";
+		a.click();
+		a.remove();
+	}
+
+	function upload(event) {
+		const file = event.target.files[0];
+		if (file) {
+			const reader = new FileReader();
+			reader.readAsText(file);
+			reader.onload = function () {
+				const result = reader.result;
+				if (typeof result === "string") {
+					const data = JSON.parse(result);
+					graph.vertices = [];
+					graph.edges = [];
+
+					const vertices = data.vertices;
+					const edges = data.edges;
+
+					for (let v of vertices) {
+						const position = v.position ?? [
+							Math.random() * 800,
+							Math.random() * 800,
+						];
+						const value = v.value ?? 0;
+						const weight = v.weight;
+						graph.addVertex(position, weight, value);
+					}
+
+					for (let e of edges) {
+						const [v1, v2] = e.vertices;
+						const weight = e.weight;
+						graph.addEdge([vertices[v1.index], vertices[v2.index]], weight);
+					}
+					graph = graph;
+					console.log(graph);
+					console.log(data);
+				}
+			};
+		}
+	}
 </script>
 
-	<h1>イジングマシンを学ぼう!</h1>
-	<h2>つかいかた</h2>
-	<p>
-		<svg width="40" height="40">			
-			<rect width="40" height="40" fill="#ffffff" stroke="black" />
-			<circle cx="20" cy="20" r="15" fill="#ffffff" stroke="black" />
-		</svg>
-		この部品をドラッグしてみよう! 頂点が追加できるよ!
-	</p>
-	<p>
-		辺を引くときは、頂点シフトキーを押しながら、ほかの頂点にドラッグすると辺を追加できるよ!
-	</p>
-	<p>
-		右上のインスペクターから、頂点や辺に関する重みや、頂点のビットを変更できるよ!
-	</p>
+<h1>イジングマシンを学ぼう!</h1>
+<h2>つかいかた</h2>
+<p>
+	<svg width="40" height="40">
+		<rect width="40" height="40" fill="#ffffff" stroke="black" />
+		<circle cx="20" cy="20" r="15" fill="#ffffff" stroke="black" />
+	</svg>
+	この部品をドラッグしてみよう! 頂点が追加できるよ!
+</p>
+<p>
+	辺を引くときは、頂点シフトキーを押しながら、ほかの頂点にドラッグすると辺を追加できるよ!
+</p>
+<p>
+	右上のインスペクターから、頂点や辺に関する重みや、頂点のビットを変更できるよ!
+</p>
 <main>
 	<svg
 		width="100%"
@@ -429,11 +487,24 @@
 		<p>全探索数</p>
 		<p>{2 ** graph.vertices.length}</p>
 		<button
-			on:click={(e)=>{
+			on:click={(e) => {
 				graph.calculateMin();
 				graph = graph;
-			}}
-		>最小のエネルギーを計算する</button>
+			}}>最小のエネルギーを計算する</button
+		>
+
+		<button on:click={download}>グラフのJSONをダウンロード </button>
+		<button
+			><label id="file-upload-label" for="json-upload"
+				>グラフのJSONをアップロード</label
+			>
+		</button>
+		<input
+			type="file"
+			style="visibility:hidden;"
+			id="json-upload"
+			on:change={upload}
+		/>
 	</div>
 </main>
 
