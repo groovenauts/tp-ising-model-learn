@@ -514,6 +514,10 @@
 		grid-row: 1 / 3;
 		grid-column: 1 / 2;
 	}
+	
+	svg  text {
+		user-select:none;
+	}
 
 	main {
 		display: grid;
