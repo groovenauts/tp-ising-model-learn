@@ -1720,6 +1720,12 @@ var app = (function () {
         expand() {
             return this.terms.map(term => `${term.coef} × x${term.rv.index}`).join(" + ");
         }
+        expandQubo() {
+            return this.terms.map((term) => `${term.coef} × (${term.rv.terms.map(term => `${term.coef} × q${term.index}`).join(" + ")})`).join(" + ");
+        }
+        expandQubo2() {
+            return this.terms.map((term) => term.rv.terms.map(termQ => `${term.coef * termQ.coef} × q${termQ.index}`).join(" + ")).join(" + ");
+        }
         value() {
             return this.terms.map(term => term.coef * term.rv.value).reduce((a, b) => a + b, 0);
         }
@@ -2045,8 +2051,20 @@ var app = (function () {
     	let dt1;
     	let dd1;
     	let p1;
-    	let t23_value = /*objectiveFunction*/ ctx[0].value() + "";
+    	let t23_value = /*objectiveFunction*/ ctx[0].expandQubo() + "";
     	let t23;
+    	let t24;
+    	let dt2;
+    	let dd2;
+    	let p2;
+    	let t26_value = /*objectiveFunction*/ ctx[0].expandQubo2() + "";
+    	let t26;
+    	let t27;
+    	let dt3;
+    	let dd3;
+    	let p3;
+    	let t29_value = /*objectiveFunction*/ ctx[0].value() + "";
+    	let t29;
     	let mounted;
     	let dispose;
     	let each_value = /*objectiveFunction*/ ctx[0].terms;
@@ -2106,10 +2124,22 @@ var app = (function () {
     			t20 = text(t20_value);
     			t21 = space();
     			dt1 = element("dt");
-    			dt1.textContent = "目的関数の計算結果";
+    			dt1.textContent = "目的関数(QUBO)";
     			dd1 = element("dd");
     			p1 = element("p");
     			t23 = text(t23_value);
+    			t24 = space();
+    			dt2 = element("dt");
+    			dt2.textContent = "目的関数(QUBO)展開";
+    			dd2 = element("dd");
+    			p2 = element("p");
+    			t26 = text(t26_value);
+    			t27 = space();
+    			dt3 = element("dt");
+    			dt3.textContent = "目的関数の計算結果";
+    			dd3 = element("dd");
+    			p3 = element("p");
+    			t29 = text(t29_value);
     			add_location(h1, file$2, 19, 0, 532);
     			add_location(h2, file$2, 20, 0, 554);
     			attr_dev(th0, "class", "svelte-85calt");
@@ -2134,8 +2164,14 @@ var app = (function () {
     			add_location(p0, file$2, 86, 15, 2738);
     			add_location(dd0, file$2, 86, 11, 2734);
     			add_location(dt1, file$2, 87, 11, 2794);
-    			add_location(p1, file$2, 88, 15, 2829);
-    			add_location(dd1, file$2, 88, 11, 2825);
+    			add_location(p1, file$2, 88, 15, 2831);
+    			add_location(dd1, file$2, 88, 11, 2827);
+    			add_location(dt2, file$2, 89, 12, 2892);
+    			add_location(p2, file$2, 90, 15, 2931);
+    			add_location(dd2, file$2, 90, 11, 2927);
+    			add_location(dt3, file$2, 91, 11, 2992);
+    			add_location(p3, file$2, 92, 15, 3027);
+    			add_location(dd3, file$2, 92, 11, 3023);
     			attr_dev(dl, "class", "objective-function svelte-85calt");
     			add_location(dl, file$2, 84, 8, 2663);
     			add_location(div, file$2, 83, 4, 2648);
@@ -2185,6 +2221,16 @@ var app = (function () {
     			append_dev(dl, dd1);
     			append_dev(dd1, p1);
     			append_dev(p1, t23);
+    			append_dev(p1, t24);
+    			append_dev(dl, dt2);
+    			append_dev(dl, dd2);
+    			append_dev(dd2, p2);
+    			append_dev(p2, t26);
+    			append_dev(p2, t27);
+    			append_dev(dl, dt3);
+    			append_dev(dl, dd3);
+    			append_dev(dd3, p3);
+    			append_dev(p3, t29);
 
     			if (!mounted) {
     				dispose = listen_dev(button, "click", /*click_handler*/ ctx[8], false, false, false);
@@ -2217,7 +2263,9 @@ var app = (function () {
     			}
 
     			if (dirty & /*objectiveFunction*/ 1 && t20_value !== (t20_value = /*objectiveFunction*/ ctx[0].expand() + "")) set_data_dev(t20, t20_value);
-    			if (dirty & /*objectiveFunction*/ 1 && t23_value !== (t23_value = /*objectiveFunction*/ ctx[0].value() + "")) set_data_dev(t23, t23_value);
+    			if (dirty & /*objectiveFunction*/ 1 && t23_value !== (t23_value = /*objectiveFunction*/ ctx[0].expandQubo() + "")) set_data_dev(t23, t23_value);
+    			if (dirty & /*objectiveFunction*/ 1 && t26_value !== (t26_value = /*objectiveFunction*/ ctx[0].expandQubo2() + "")) set_data_dev(t26, t26_value);
+    			if (dirty & /*objectiveFunction*/ 1 && t29_value !== (t29_value = /*objectiveFunction*/ ctx[0].value() + "")) set_data_dev(t29, t29_value);
     		},
     		i: noop,
     		o: noop,
