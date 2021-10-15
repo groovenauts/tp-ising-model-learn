@@ -26,4 +26,8 @@ export class ObjectiveFunctions {
     expand() {
         return this.terms.map(term=> `${term.coef} × x${term.rv.index}` ).join(" + ");
     }
+
+    value() {
+        return this.terms.map(term=>term.coef * term.rv.value).reduce((a,b)=> a + b, 0);
+    }
 }

@@ -90,6 +90,8 @@ import { ObjectiveFunctions } from "./ObjectiveFunction";
         <dl class="objective-function">
            <dt>目的関数</dt> 
            <dd><p > {objectiveFunction.expand()} </p></dd>
+           <dt>目的関数の計算結果</dt>
+           <dd><p>{objectiveFunction.value()}</p></dd>
         </dl>
         
     </div>
