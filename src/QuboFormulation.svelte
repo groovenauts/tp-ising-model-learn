@@ -97,8 +97,12 @@ import { ObjectiveFunctions } from "./ObjectiveFunction";
            <dt>目的関数の計算結果</dt>
            <dd><p>{objectiveFunction.value()}</p></dd>
         </dl>
-        
     </div>
+
+    <div>
+        <h2>制約条件</h2>
+    </div>
+
 </main>
 
 <style>
