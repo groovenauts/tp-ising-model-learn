@@ -9,13 +9,13 @@ type Term = {
 export class QuboConstraints {
     objectiveFunction : ObjectiveFunctions;
     terms: Term[];
-    limit: number;
+    _limit: number;
 
 
     constructor(objectiveFunction){
         this.objectiveFunction = objectiveFunction;
         this.terms = [];
-        this.limit = 0;
+        this._limit = 0;
         this.update();   
     }
 
@@ -31,6 +31,13 @@ export class QuboConstraints {
         });
     }
 
+    get limit(){
+        return this._limit;
+    }
 
+    set limit(newLimit: number){
+        this._limit = newLimit;
+        this.update();
+    }
 
 }
